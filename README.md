@@ -86,10 +86,10 @@ python fp_growth.py
 
 ## Contributions
 
-- **Umer Abdul Khaliq**
-- **Gurpreet Singh**
 - **Bilal Tariq**
+- **Umer Abdul Khaliq**
 - **Saif Ali**
+- **Gurpreet Singh**
 
 ---
 
