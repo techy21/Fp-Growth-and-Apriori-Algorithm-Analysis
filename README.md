@@ -1,5 +1,3 @@
-# Fp-Growth-and-Apriori-Algorithm-Analysis
-
 # FP-Growth and Apriori Algorithm Analysis
 
 This project improves frequent pattern mining for healthcare data by optimizing the EPDA algorithm using the FP-Growth algorithm and Apache Spark. The implementation focuses on memory efficiency and real-time processing to handle large datasets effectively.
