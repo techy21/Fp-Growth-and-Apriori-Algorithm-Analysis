@@ -78,12 +78,13 @@ cd Fp-Growth-and-Apriori-Algorithm-Analysis
 - Confirm that the dataset adheres to the specified format.
 - If necessary, update the dataset path in the `fp_growth.py` script.
 
-### Step 3: Run the FP-Growth Script
+### Step 3: Run the FP-Growth Script or EPDA Simulation
 
 Run the script to analyze the data:
 
 ```bash
 python fp_growth.py
+python epda_simulation.py
 ```
 
 ---
