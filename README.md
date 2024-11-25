@@ -1,3 +1,4 @@
+
 # FP-Growth and Apriori Algorithm Analysis
 
 This project improves frequent pattern mining for healthcare data by optimizing the EPDA algorithm using the FP-Growth algorithm and Apache Spark. The implementation focuses on memory efficiency and real-time processing to handle large datasets effectively.
@@ -43,6 +44,20 @@ Follow these steps to install the dependencies:
    ```bash
    pip install pyspark pandas numpy
    ```
+4. **Install Hadoop Winutils (Optional for Windows)**:
+   - **Download Winutils**:
+     Download Winutils for your version of Hadoop from this repository: [Winutils GitHub](https://github.com/steveloughran/winutils).
+   - **Extract Winutils**:
+     Create a folder `C:\hadoop\bin`. Extract the `winutils.exe` file into this folder.
+   - **Set Hadoop Environment Variable**:
+     - Go to Control Panel -> System -> Advanced System Settings -> Environment Variables.
+     - Add a new system variable:
+       - Variable Name: `HADOOP_HOME`
+       - Variable Value: `C:\hadoop`
+     - Edit the `Path` system variable to include:
+       ```bash
+       %HADOOP_HOME%\bin
+       ```
 
 ---
 
