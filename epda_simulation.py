@@ -1,55 +1,54 @@
+import time
+import psutil
+import csv
 from itertools import combinations
+from prettytable import PrettyTable
 
-# Simulated healthcare data
-data = [
-    ["diabetes", "hypertension", "heart_disease"],
-    ["diabetes", "obesity"],
-    ["hypertension", "cholesterol", "diabetes"],
-    ["heart_disease", "diabetes"],
-    ["obesity", "hypertension"],
-    ["hypertension", "cholesterol"],
-    ["cholesterol", "diabetes"],
-    ["heart_disease", "hypertension", "cholesterol"],
-    ["obesity", "diabetes", "hypertension"],
-    ["diabetes", "obesity", "cholesterol"],
-    ["obesity", "hypertension", "heart_disease"],
-    ["heart_disease", "cholesterol"],
-]
-
-# Minimum support threshold
-min_support = 0.2  # 20%
-
-# Generate all possible combinations of items
-def generate_combinations(data, k):
-    combinations_list = []
-    for transaction in data:
-        combinations_list.extend(list(combinations(transaction, k)))
-    return combinations_list
-
-# Count the support for each combination
-def calculate_support(data, itemsets):
-    support_count = {}
-    for itemset in itemsets:
-        support_count[itemset] = sum([1 for transaction in data if set(itemset).issubset(transaction)])
-    return {item: count for item, count in support_count.items() if count / len(data) >= min_support}
-
-# Apriori algorithm
-def apriori(data, min_support):
-    k = 1
-    frequent_itemsets = {}
-    while True:
-        combinations_list = generate_combinations(data, k)
-        support_count = calculate_support(data, combinations_list)
-        if not support_count:
-            break
-        frequent_itemsets.update(support_count)
-        k += 1
+# Monitor memory usage
+def memory_usage():
+    process = psutil.Process()
+    return process.memory_info().rss / (1024 * 1024)  # Convert to MB
+# Simulated EPDA algorithm
+def epda_algorithm(transactions, min_support):
+    # Count single items
+    item_counts = {}
+    for transaction in transactions:
+        for item in transaction:
+            item_counts[item] = item_counts.get(item, 0) + 1
+    # Generate combinations for higher-order itemsets
+    for transaction in transactions:
+        for r in range(2, len(transaction) + 1):  # Generate itemsets of size 2 and higher
+            for combo in combinations(transaction, r):
+                combo = tuple(sorted(combo))  # Sort to avoid duplicates
+                item_counts[combo] = item_counts.get(combo, 0) + 1
+    # Filter by min_support
+    frequent_itemsets = {item: count for item, count in item_counts.items() if count / len(transactions) >= min_support}
     return frequent_itemsets
-
-# Run Apriori
-frequent_itemsets = apriori(data, min_support)
-
-# Display results
-print("Frequent Itemsets (EPDA Simulation):")
-for itemset, count in frequent_itemsets.items():
-    print(f"{itemset}: {count}")
+# Load dataset from CSV
+def load_dataset(file_path):
+    transactions = []
+    with open(file_path, mode='r') as file:
+        reader = csv.reader(file)
+        next(reader)  # Skip header
+        for row in reader:
+            transactions.append(row[1].split(", "))  # Assuming the second column contains the items
+    return transactions
+# Load the dataset
+file_path = "large_healthcare_dataset.csv"  # Make sure this matches the file used for FP-Growth
+transactions = load_dataset(file_path)
+# Measure execution time and memory usage
+start_time = time.time()
+initial_memory = memory_usage()
+# Run EPDA
+frequent_itemsets = epda_algorithm(transactions, min_support=0.01)  # Adjust min_support as needed
+end_time = time.time()
+final_memory = memory_usage()
+# Display frequent itemsets in table format
+table = PrettyTable()
+table.field_names = ["Frequent Itemsets", "Frequency"]
+for item, freq in sorted(frequent_itemsets.items(), key=lambda x: (-len(x[0]) if isinstance(x[0], tuple) else 1, -x[1]))[:20]:
+    table.add_row([", ".join(item) if isinstance(item, tuple) else item, freq])
+print(table)
+# Display execution time and memory usage
+print(f"\nExecution Time (EPDA): {end_time - start_time:.4f} seconds")
+print(f"Memory Usage (EPDA): {final_memory - initial_memory:.4f} MB")
